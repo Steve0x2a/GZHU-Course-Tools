@@ -1,4 +1,5 @@
 from bs4 import BeautifulSoup
+import urllib.parse
 
 def get_webflow(response):
     soup = BeautifulSoup(response.text,'html.parser')
@@ -25,5 +26,27 @@ def get_stuinfo(response):
     d["major"] = soup.find(id="lbl_zymc").string
     d["classname"] = soup.find(id="lbl_xzb").string
     d["gradeClass"] = soup.find(id="lbl_dqszj").string
+    d["urlName"] = urllib.parse.quote_plus(d["name"].encode('gb2312'))
     return d
 
+def get__VIEWSTATE(response):
+    html = response.content.decode("gb2312")
+    soup = BeautifulSoup(html, "html.parser")
+    __VIEWSTATE = soup.findAll(name="input")[0]["value"]
+    return __VIEWSTATE
+
+def getGrade(response):
+    html = response.content.decode("gb2312")
+    soup = BeautifulSoup(html, "html5lib")
+    trs = soup.find(id="Datagrid1").findAll("tr")[1:]
+    Grades = []
+    for tr in trs:
+        tds = tr.findAll("td")
+        tds = tds[:2] + tds[3:5] + tds[6:9]
+        oneGradeKeys = ["year", "term", "name", "type", "credit","gradePonit","grade"]
+        oneGradeValues = []
+        for td in tds:
+            oneGradeValues.append(td.string)
+        oneGrade = dict((key, value) for key, value in zip(oneGradeKeys, oneGradeValues))
+        Grades.append(oneGrade)
+    return Grades
