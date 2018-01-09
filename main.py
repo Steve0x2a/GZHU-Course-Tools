@@ -32,11 +32,14 @@ class login_gzdx(object):
 
         response = self.session.post(url = self.url, data = postdata)
         if response.status_code == requests.codes.ok:
-            print('成功')
             infourl = self.baseUrl+"/xsgrxx.aspx?xh="+account+"&"
             info = self.session.get(infourl)
+            try:
             self.stuinfo = get_stuinfo(info)
             print("欢迎你, {}, 您的学号为:{}".format(self.stuinfo["name"],self.stuinfo["studentnumber"]))
+            except AttributeError:
+                print("密码错误")
+                login(account = account,passwd =password)
 
 if __name__ == '__main__':
     login = login_gzdx()
