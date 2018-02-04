@@ -33,7 +33,9 @@ def get__VIEWSTATE(response):
     html = response.content.decode("gb2312")
     soup = BeautifulSoup(html, "html.parser")
     __VIEWSTATE = soup.findAll(name="input")[0]["value"]
-    return __VIEWSTATE
+    __VIEWSTATEGENERATOR  = soup.findAll(name="input")[1]["value"]
+    return __VIEWSTATE, __VIEWSTATEGENERATOR
+
 
 def getGrade(response):
     html = response.content.decode("gb2312")
@@ -50,3 +52,10 @@ def getGrade(response):
         oneGrade = dict((key, value) for key, value in zip(oneGradeKeys, oneGradeValues))
         Grades.append(oneGrade)
     return Grades
+
+def get__VIEWSTATE2(response):
+    html = response.content.decode("gbk")
+    soup = BeautifulSoup(html, "html.parser")
+    __VIEWSTATE = soup.findAll(name="input")[2]["value"]
+    __VIEWSTATEGENERATOR  = soup.findAll(name="input")[3]["value"]
+    return __VIEWSTATE, __VIEWSTATEGENERATOR
