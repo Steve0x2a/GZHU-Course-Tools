@@ -8,7 +8,7 @@ import pickle
 class select_course(object):
 
 
-    def __init__(self,index1,index2,MAX):
+    def __init__(self,index1,index2,username,MAX):
         '''
         初始化一些参数
         max为队列倍数
@@ -17,6 +17,9 @@ class select_course(object):
         urls是当前可用选课服务器
         data是发出选课post所需参数
         '''
+        self.concurrent = 200
+        self.q = queue.Queue(self.concurrent * 2)
+        self.username = username
         self.max = MAX
         self.index1, self.index2 = index1,index2
         self.session = requests.session()
@@ -37,8 +40,8 @@ class select_course(object):
         self.data = {
                 '__EVENTTARGET': '',
                 '__EVENTARGUMENT': '',
-                '__VIEWSTATE':view['state'+index1],
-                "__VIEWSTATEGENERATOR" : view['generator'+index1],
+                '__VIEWSTATE':view['state'+self.index1],
+                "__VIEWSTATEGENERATOR" : view['generator'+self.index1],
                 'ddl_kcxz': '',
                 'ddl_ywyl': '',
                 'ddl_kcgs': '',
@@ -58,25 +61,24 @@ class select_course(object):
         '''发出选课请求函数 用作被run函数调用'''
         while True:    
             try:
-                url = q.get()
+                url = self.q.get()
                 self.session.post(url,data = self.data)
-                q.task_done()
+                self.q.task_done()
             except:
-                q.task_done()
+                self.q.task_done()
                 
     def run(self):
-        '''线程队列发出post 可异步请求 极高效率进行post选课请求'''
-        concurrent = 200
-        q = queue.Queue(concurrent * 2)
-        urls = self.urls * self.max
-        for i in range(concurrent):
+        for i in range(self.concurrent):
             t = Thread(target=self.post)
             t.daemon = True
             t.start()
         try:
-            for url in urls:
-                q.put(url.strip())
-            q.join()
+            for host in self.urls:
+                url = host+'/xf_xsqxxxk.aspx?xh='+self.username+'&xm='+self.view['urlname']+'&gnmkdm=N121203'
+                self.q.put(url.strip())
+            self.q.join()
         except KeyboardInterrupt:
             sys.exit(1)
-        
+
+    #def test(self):
+        #a = self.session.post('http://202.192.18.184/xf_xsqxxxk.aspx?xh=1719500024&xm=%D5%B2%D2%DD&gnmkdm=N121203',data = self.data)

@@ -29,7 +29,7 @@ class course(object):
         #构造选课链接url 其中urlName为gbk格式的姓名
         course_url = self.baseUrl + "/xf_xsqxxxk.aspx?xh=" + self.stuinfo["studentnumber"] + \
                                     "&xm=" + self.stuinfo['urlName'] + "&gnmkdm=N121203"
-        self.session.headers['Referer'] = course_url
+        
         view = {}
         response = self.session.get(course_url)
         #用get__VIEWSTATE2函数获得首次访问选课页面viewstate以及viewgenerator参数
@@ -44,8 +44,10 @@ class course(object):
             got_course = self.get_courses_post(state,generator,num)
             now_course = self.get_coures_list(got_course,num)
             courses_list['第'+str(num)+'页'] = now_course
-            now_view = self.get_courses_view(response,num)
+            now_view = self.get_courses_view(got_course,num)
             courses_view = dict(courses_view,**now_view)
+        #保存gbk格式的名字以备后面使用
+        courses_view['urlname'] = self.stuinfo['urlName'] 
         #将课程以及view参数保存下来以备使用
         with open('data/courses_list.json', 'w') as f:
             json.dump(courses_list, f,ensure_ascii=False,indent = 4, )

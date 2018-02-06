@@ -19,13 +19,13 @@ Python 3 +Requests + BeautifulSoup4 + lmxl +fire
 
 在`data/course_list.json`中可以查看选课课表情况
 
-运行`python run.py select 选课编号 队列数(可选)`进行选课
+运行`python run.py select 学号 选课编号 --MAX=队列数(可选)`进行选课
 
 其中队列数默认为10
 #### 例子
 ```bash
-$python run.py refresh '17xxxxxxxx' '123456'#刷新课表以及用户cookie
-$python run.py select 102 #选择 '中国园林'课程
+$python run.py refresh 17xxxxxxxx 123456 #刷新课表以及用户cookie
+$python run.py select 17xxxxxxx 12 --MAX=10 #选择 '中国园林'课程 10倍post力度
 ```
 
 #### 注意事项

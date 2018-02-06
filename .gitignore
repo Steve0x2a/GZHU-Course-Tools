@@ -1,3 +1,4 @@
 old/
 sample/__pycache__
 .vscode/
+sample/test.py
