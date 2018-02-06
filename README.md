@@ -36,7 +36,7 @@ $python run.py select 102 #选择 '中国园林'课程
 - 请**不要泄露**data/cookies中的文件 泄露可能导致教务网站信息被盗用
 
 ## 原理
-见docs文件夹
+见docs文件夹(待完成
 ## TO DO
 - 完善cookie管理系统
 - 实时监测是否选课成功

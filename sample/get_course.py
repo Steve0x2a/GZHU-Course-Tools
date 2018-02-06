@@ -22,28 +22,40 @@ class course(object):
         print("欢迎你, {}, cc您的学号为:{}".format(self.stuinfo["name"],self.stuinfo["studentnumber"]))
 
     def save_courses(self):
-        course_url = self.baseUrl + "/xf_xsqxxxk.aspx?xh=" + self.stuinfo["studentnumber"] + "&xm=" + self.stuinfo['urlName'] + "&gnmkdm=N121203"
+        '''
+        用作储存选课表为data/course_list.json
+        以及储存每个选课页面的viewstate用作选课
+        '''
+        #构造选课链接url 其中urlName为gbk格式的姓名
+        course_url = self.baseUrl + "/xf_xsqxxxk.aspx?xh=" + self.stuinfo["studentnumber"] + \
+                                    "&xm=" + self.stuinfo['urlName'] + "&gnmkdm=N121203"
         self.session.headers['Referer'] = course_url
         view = {}
         response = self.session.get(course_url)
+        #用get__VIEWSTATE2函数获得首次访问选课页面viewstate以及viewgenerator参数
         state ,generator = get__VIEWSTATE2(response)
+        #用get_total函数获得总课程数 再用math.ceil函数获得向右取整的选课页数
         total_page = math.ceil(float(self.get_total(response)/100))
+        #为获得良好排序的课程表 故用OrderedDict
         courses_list = OrderedDict()
         courses_view ={}
-        num = 1
-        while num <= total_page:
+        #获得每一页课程以及view参数
+        for num in range(1,total_page+1) :
             got_course = self.get_courses_post(state,generator,num)
             now_course = self.get_coures_list(got_course,num)
             courses_list['第'+str(num)+'页'] = now_course
             now_view = self.get_courses_view(response,num)
             courses_view = dict(courses_view,**now_view)
-            num += 1
+        #将课程以及view参数保存下来以备使用
         with open('data/courses_list.json', 'w') as f:
             json.dump(courses_list, f,ensure_ascii=False,indent = 4, )
         with open('data/values/'+self.username+'view.txt', 'wb') as f:
             pickle.dump(courses_view,f)
         
     def get_coures_list(self,response,total_page):
+        '''
+        用正则表达式以及BS4获得课程表(待优化)
+        '''
         soup = BeautifulSoup(response.text,'lxml')
         pattern =  re.compile('\d+')
         pattern2 = re.compile('kcmcGrid:_ctl\d+:jc')
@@ -72,6 +84,7 @@ class course(object):
             
 
     def get_courses_view(self,response,total_page):
+        '''返回当前页的view参数'''
         __VIEWSTATE, __VIEWSTATEGENERATOR = get__VIEWSTATE2(response)
         view = {}
         view['state'+str(total_page)] = __VIEWSTATE
@@ -79,11 +92,13 @@ class course(object):
         return view
 
     def get_total(self,response):
+        '''获得可选课程总数'''
         soup = BeautifulSoup(response.text,'lxml')
         total_course = int(soup.find('span',id="dpkcmcGrid_lblTotalRecords").string)
         return total_course
 
     def get_selected_course(self,response):
+        '''获得已选课程'''
         soup = BeautifulSoup(response.text,'lxml')
         selected_course = {}
         for i in soup.find_all(text = ' 退选 '):
@@ -101,6 +116,7 @@ class course(object):
         return selected_course
 
     def get_courses_post(self,state,generator,index1):
+        '''发出获取某页课程表请求'''
         data = {    
             '__EVENTTARGET': '',
             '__EVENTARGUMENT': '',

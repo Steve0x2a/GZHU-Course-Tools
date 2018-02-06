@@ -2,6 +2,7 @@ from bs4 import BeautifulSoup
 import urllib.parse
 
 def get_webflow(response):
+    '''获得选课页面必须的lt 以及execution参数'''
     soup = BeautifulSoup(response.text,'html.parser')
     lt = soup.find('input',{'name' : 'lt'})['value']
     execution = soup.find('input',{'name' : 'execution'})['value']
@@ -9,6 +10,7 @@ def get_webflow(response):
     return(lt,execution)
 
 def get_stuinfo(response):
+    '''通过解析学生个人信息页面获得学生基本信息'''
     html = response.text
     soup = BeautifulSoup(html, 'html.parser')
     d = {}
@@ -30,6 +32,7 @@ def get_stuinfo(response):
     return d
 
 def get__VIEWSTATE(response):
+    '''获得页面view参数'''
     html = response.content.decode("gb2312")
     soup = BeautifulSoup(html, "html.parser")
     __VIEWSTATE = soup.findAll(name="input")[0]["value"]
@@ -38,6 +41,7 @@ def get__VIEWSTATE(response):
 
 
 def getGrade(response):
+    '''解析获得成绩'''
     html = response.content.decode("gb2312")
     soup = BeautifulSoup(html, "html5lib")
     trs = soup.find(id="Datagrid1").findAll("tr")[1:]
@@ -54,6 +58,7 @@ def getGrade(response):
     return Grades
 
 def get__VIEWSTATE2(response):
+    '''解析获得选课页面view函数'''
     html = response.content.decode("gbk")
     soup = BeautifulSoup(html, "html.parser")
     __VIEWSTATE = soup.findAll(name="input")[2]["value"]

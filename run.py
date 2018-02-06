@@ -11,7 +11,7 @@ class Run(object):
     '''
     使用方法:
     refresh 学号 教务密码 刷新cookies以及课程表
-    select index1 index2 线程数 开始抢课
+    select index 线程数 开始抢课
     '''
     def refresh(username,password):
         jwlogin = jw.login(username,password)

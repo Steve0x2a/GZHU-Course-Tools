@@ -6,7 +6,17 @@ import urllib.parse
 import pickle
 
 class select_course(object):
+
+
     def __init__(self,index1,index2,MAX):
+        '''
+        初始化一些参数
+        max为队列倍数
+        index1 index2分别为选课页数和在课程在页数上的序号 用作发出选课请求
+        view字典里储存着之前获取的每个页面的view参数 可快速进行抢课而不用等待解析
+        urls是当前可用选课服务器
+        data是发出选课post所需参数
+        '''
         self.max = MAX
         self.index1, self.index2 = index1,index2
         self.session = requests.session()
@@ -43,7 +53,9 @@ class select_course(object):
                 'dpDataGrid2:txtPageSize':'100'
 
             }
+            
     def post(self):
+        '''发出选课请求函数 用作被run函数调用'''
         while True:    
             try:
                 url = q.get()
@@ -51,7 +63,9 @@ class select_course(object):
                 q.task_done()
             except:
                 q.task_done()
+                
     def run(self):
+        '''线程队列发出post 可异步请求 极高效率进行post选课请求'''
         concurrent = 200
         q = queue.Queue(concurrent * 2)
         urls = self.urls * self.max
