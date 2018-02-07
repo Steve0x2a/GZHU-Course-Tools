@@ -99,23 +99,7 @@ class course(object):
         total_course = int(soup.find('span',id="dpkcmcGrid_lblTotalRecords").string)
         return total_course
 
-    def get_selected_course(self,response):
-        '''获得已选课程'''
-        soup = BeautifulSoup(response.text,'lxml')
-        selected_course = {}
-        for i in soup.find_all(text = ' 退选 '):
-            classes = {}
-            classname = i.find_previous('tr').find('td')
-            teachername = classname.string.next_element
-            classcode = teachername.string.next_element
-            classtime = classcode.string.next_element.string.next_element.string.next_element.string.next_element
-            classlocation = classtime.string.next_element
-            classes['教师']=teachername.string
-            classes['学分']=classcode.string
-            classes['上课时间']=classtime.string
-            classes['上课地点']=classlocation.string
-            selected_course[classname.string] = classes
-        return selected_course
+
 
     def get_courses_post(self,state,generator,index1):
         '''发出获取某页课程表请求'''

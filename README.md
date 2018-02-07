@@ -19,13 +19,13 @@ Python 3 +Requests + BeautifulSoup4 + lmxl +fire
 
 在`data/course_list.json`中可以查看选课课表情况
 
-运行`python run.py select 学号 选课编号 --MAX=队列数(可选)`进行选课
+运行`python run.py select 学号 选课编号 --MAX=队列数(可选) --TIMEOUT=延迟秒数(可选)`进行选课
 
 其中队列数默认为10
 #### 例子
 ```bash
 $python run.py refresh 17xxxxxxxx 123456 #刷新课表以及用户cookie
-$python run.py select 17xxxxxxx 12 --MAX=10 #选择 '中国园林'课程 10倍post力度
+$python run.py select 17xxxxxxx 12 --MAX=10 --TIMEOUT =7s #选择 '中国园林'课程 10倍post力度 最多等待7s
 ```
 
 #### 注意事项

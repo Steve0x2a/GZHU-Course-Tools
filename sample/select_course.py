@@ -4,11 +4,12 @@ import sys
 import queue
 import urllib.parse
 import pickle
+from sample.parse import get_selected_course
 
 class select_course(object):
 
 
-    def __init__(self,index1,index2,username,MAX):
+    def __init__(self,index1,index2,username,MAX,TIMEOUT):
         '''
         初始化一些参数
         max为队列倍数
@@ -20,6 +21,7 @@ class select_course(object):
         self.concurrent = 200
         self.q = queue.Queue(self.concurrent * 2)
         self.username = username
+        self.timeout = TIMEOUT
         self.max = MAX
         self.index1, self.index2 = index1,index2
         self.session = requests.session()
@@ -32,11 +34,10 @@ class select_course(object):
             view = pickle.load(f)
         self.view = view
         self.urls = [
-        'http://202.192.18.189',
         'http://202.192.18.183',
         'http://202.192.18.184',
         'http://202.192.18.182'
-        ]
+        ]*self.max
         self.data = {
                 '__EVENTTARGET': '',
                 '__EVENTARGUMENT': '',
@@ -62,7 +63,10 @@ class select_course(object):
         while True:    
             try:
                 url = self.q.get()
-                self.session.post(url,data = self.data)
+                response = self.session.post(url,data = self.data,timeout = self.timeout)
+                if response.status_code == 200:
+                    self.response = response            
+                self.selected = self.get_selected_course(response)
                 self.q.task_done()
             except:
                 self.q.task_done()
@@ -80,5 +84,6 @@ class select_course(object):
         except KeyboardInterrupt:
             sys.exit(1)
 
-    #def test(self):
-        #a = self.session.post('http://202.192.18.184/xf_xsqxxxk.aspx?xh=1719500024&xm=%D5%B2%D2%DD&gnmkdm=N121203',data = self.data)
+    def show_selected(self):
+        courses = get_selected_course(self.response)
+        print('已选课程:{}'.format(courses))

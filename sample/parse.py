@@ -64,3 +64,12 @@ def get__VIEWSTATE2(response):
     __VIEWSTATE = soup.findAll(name="input")[2]["value"]
     __VIEWSTATEGENERATOR  = soup.findAll(name="input")[3]["value"]
     return __VIEWSTATE, __VIEWSTATEGENERATOR
+
+def get_selected_course(response):
+    '''获得已选课程'''
+    soup = BeautifulSoup(response.text,'lxml')
+    selected_course = []
+    for i in soup.find_all(text = ' 退选 '):
+        classname = i.find_previous('tr').find('td')
+        selected_course.append(classname.string)
+    return selected_course
