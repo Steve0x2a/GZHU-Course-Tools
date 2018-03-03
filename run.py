@@ -1,4 +1,4 @@
-from sample import jw,get_course,select_course,test
+from sample import jw,get_course,select_course
 import fire
 
 class Run(object):
