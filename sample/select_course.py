@@ -9,7 +9,7 @@ from sample.parse import get_selected_course
 class select_course(object):
 
 
-    def __init__(self,index1,index2,username,MAX,TIMEOUT):
+    def __init__(self,index1=None,index2=None,username,MAX,TIMEOUT):
         '''
         初始化一些参数
         max为队列倍数
@@ -89,5 +89,10 @@ class select_course(object):
         try:
             courses = get_selected_course(self.response)
             print('已选课程:{}'.format(courses))
-        except AttributeError:
-            print("获取失败 请重试。")
+        except :
+            url="http://202.192.18.184/xf_xsqxxxk.aspx?xh='+self.username"
+            response = self.session.get(url)
+            courses = get_selected_course(response)
+            print('选课出错,已选课程:{}'.format(courses))            
+                
+            
