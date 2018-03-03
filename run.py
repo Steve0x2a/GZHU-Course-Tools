@@ -57,13 +57,13 @@ class wxbot(Run):
             return('密码错误')
     def wx_refresh(self,username,password):
         if self.ensure(username,password):
-            jwlogin = jw.login(username,password)
+            jwlogin = account.login(username,password)
             res = jwlogin.account_login()
             return res
         else:
             return('密码错误')
     def wx_login(self,username,password):
-        jwlogin = jw.login(username,password)
+        jwlogin = account.login(username,password)
         res = jwlogin.account_login()
         if res == 'Account login successfully':
             get = get_course.course(username)
