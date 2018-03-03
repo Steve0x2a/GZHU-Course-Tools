@@ -1,5 +1,10 @@
+<<<<<<< HEAD
 from sample import account,get_course,select_course
 import fire,pickle
+=======
+from sample import jw,get_course,select_course
+import fire,json
+>>>>>>> 0685f388772d5a0acefa9b88e2fb23a744650866
 
 class Run(object):
     '''
@@ -26,6 +31,7 @@ class Run(object):
             sc.run()
             sc.show_selected()
             flag = int(input('选课成功请输入0退出 输入1重复选课操作 '))
+<<<<<<< HEAD
             
 class wxbot(Run):
     def wx_select(self,username,password,index):
@@ -59,5 +65,28 @@ class wxbot(Run):
                 return True
             else:
                 return False
+=======
+
+    def file(self,method):
+        with open("info.json",'r') as f:
+            info = json.load(f)
+        method = str(method)
+        if method == "refresh":
+            jwlogin = jw.login(info["username"],info["password"])
+            jwlogin.main()
+            get = get_course.course(info["username"])
+            get.save_courses()
+        if method == "select":
+            index1 = info["index"][0]
+            index2 = info["index"][1:]
+            sc = select_course.select_course(index1,index2,info["username"],self.MAX,self.TIMEOUT)
+            flag = 1
+            while flag==1:
+                sc.run()
+                sc.show_selected()
+                flag = int(input('选课成功请输入0退出 输入1重复选课操作 '))                
+
+
+>>>>>>> 0685f388772d5a0acefa9b88e2fb23a744650866
 if __name__ == '__main__':
   fire.Fire(Run)

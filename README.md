@@ -6,6 +6,8 @@
 
 广州大学教务系统通识选修课选课脚本
 
+本脚本仅用作学习交流 产生的所有责任由使用者承担
+
 ---
 ## Requirements 
 Python 3 +Requests + BeautifulSoup4 + lmxl +fire

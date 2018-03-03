@@ -88,8 +88,6 @@ class select_course(object):
     def show_selected(self):
         try:
             courses = get_selected_course(self.response)
-            str_courses = ','.join(courses)
             print('已选课程:{}'.format(courses))
-            return str_courses
-        except:
-            return ''
+        except AttributeError:
+            print("获取失败 请重试。")

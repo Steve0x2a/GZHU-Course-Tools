@@ -36,8 +36,7 @@ class jwlogin(object):
         response = self.session.post(url = self.loginurl, timeout = self.timeout)
         info = self.session.get(self.infourl, timeout = self.timeout)
         self.stuinfo = get_stuinfo(info)
-        if "xs_main.aspx" in response.text:
-            return 'Cookie login successfully'
+        print("欢迎你, {}, Cookie登录成功。您的学号为:{}".format(self.stuinfo["name"],self.stuinfo["studentnumber"]))
         
     def account_login(self):
         '''
