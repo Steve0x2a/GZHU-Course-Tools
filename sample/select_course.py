@@ -9,7 +9,7 @@ from sample.parse import get_selected_course
 class select_course(object):
 
 
-    def __init__(self,index1=None,index2=None,username,MAX,TIMEOUT):
+    def __init__(self,index1='',index2='',username,MAX,TIMEOUT):
         '''
         初始化一些参数
         max为队列倍数
