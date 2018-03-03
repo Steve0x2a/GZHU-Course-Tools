@@ -14,6 +14,7 @@ class course(jwlogin):
         以及储存每个选课页面的viewstate用作选课
         '''
         #构造选课链接url 其中urlName为gbk格式的姓名
+        self.login()
         course_url = self.baseUrl + "/xf_xsqxxxk.aspx?xh=" + self.stuinfo["studentnumber"] + \
                                     "&xm=" + self.stuinfo['urlName'] + "&gnmkdm=N121203"
         
@@ -111,7 +112,7 @@ class course(jwlogin):
         return response
 
     def wx_save_courses(self,password):
-
+        self.login()
         #构造选课链接url 其中urlName为gbk格式的姓名
         course_url = self.baseUrl + "/xf_xsqxxxk.aspx?xh=" + self.stuinfo["studentnumber"] + \
                                     "&xm=" + self.stuinfo['urlName'] + "&gnmkdm=N121203"

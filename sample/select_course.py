@@ -39,28 +39,28 @@ class select_course(object):
         'http://202.192.18.184',
         'http://202.192.18.182'
         ]*self.max
-        self.data = {
-                '__EVENTTARGET': '',
-                '__EVENTARGUMENT': '',
-                '__VIEWSTATE':view['state'+self.index1],
-                "__VIEWSTATEGENERATOR" : view['generator'+self.index1],
-                'ddl_kcxz': '',
-                'ddl_ywyl': '',
-                'ddl_kcgs': '',
-                'ddl_xqbs': '1',
-                'ddl_sksj': '',
-                'TextBox1': '',
-                'kcmcGrid:_ctl'+index2+':xk':'on',
-                'Button1': urllib.parse.quote_plus('  提交  '.encode('gb2312')),
-                'dpkcmcGrid:txtChoosePage': index1,
-                'dpkcmcGrid:txtPageSize': '100',
-                'dpDataGrid2:txtChoosePage':'1',  
-                'dpDataGrid2:txtPageSize':'100'
 
-            }
-            
     def post(self):
         '''发出选课请求函数 用作被run函数调用'''
+        self.data = {
+            '__EVENTTARGET': '',
+            '__EVENTARGUMENT': '',
+            '__VIEWSTATE':self.view['state'+self.index1],
+            "__VIEWSTATEGENERATOR" : self.view['generator'+self.index1],
+            'ddl_kcxz': '',
+            'ddl_ywyl': '',
+            'ddl_kcgs': '',
+            'ddl_xqbs': '1',
+            'ddl_sksj': '',
+            'TextBox1': '',
+            'kcmcGrid:_ctl'+self.index2+':xk':'on',
+            'Button1': urllib.parse.quote_plus('  提交  '.encode('gb2312')),
+            'dpkcmcGrid:txtChoosePage': self.index1,
+            'dpkcmcGrid:txtPageSize': '100',
+            'dpDataGrid2:txtChoosePage':'1',  
+            'dpDataGrid2:txtPageSize':'100'
+
+            }
         while True:    
             try:
                 url = self.q.get()
@@ -89,10 +89,13 @@ class select_course(object):
         try:
             courses = get_selected_course(self.response)
             print('已选课程:{}'.format(courses))
+            return courses
         except :
-            url="http://202.192.18.184/xf_xsqxxxk.aspx?xh='+self.username"
+            self.session.get('http://202.192.18.184')
+            url="http://202.192.18.184/xf_xsqxxxk.aspx?xh="+self.username
             response = self.session.get(url)
             courses = get_selected_course(response)
-            print('选课出错,已选课程:{}'.format(courses))            
+            print('已选课程:{}'.format(courses))          
+            return courses  
                 
             

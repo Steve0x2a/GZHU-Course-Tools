@@ -20,7 +20,7 @@ class Run(object):
         index = str(index)
         index1 = index[0]
         index2 = index[1:]
-        sc = select_course.select_course(index1,index2,username,self.MAX,self.TIMEOUT)
+        sc = select_course.select_course(username,self.MAX,self.TIMEOUT,index1,index2)
         flag = 1
         while flag==1:
             sc.run()
@@ -38,7 +38,7 @@ class Run(object):
         if method == "select":
             index1 = info["index"][0]
             index2 = info["index"][1:]
-            sc = select_course.select_course(index1,index2,info["username"],self.MAX,self.TIMEOUT)
+            sc = select_course.select_course(info["username"],self.MAX,self.TIMEOUT,index1,index2)
             flag = 1
             while flag==1:
                 sc.run()
@@ -50,29 +50,30 @@ class wxbot(Run):
         if self.ensure(username,password):
             index1 = index[0]
             index2 = index[1:]      
-            sc = select_course.select_course(index1,index2,username,self.MAX,self.TIMEOUT)
+            sc = select_course.select_course(username,self.MAX,self.TIMEOUT,index1=index1,index2=index2)
             sc.run()
-            return '已选课程'+sc.show_selected()
+            return '已选课程 '+','.join(sc.show_selected())
         else :
             return('密码错误')
     def wx_refresh(self,username,password):
         if self.ensure(username,password):
-            jwlogin = account.login(username,password)
+            jwlogin = account.jwlogin(username,password)
             res = jwlogin.account_login()
             return res
         else:
             return('密码错误')
     def wx_login(self,username,password):
-        jwlogin = account.login(username,password)
+        jwlogin = account.jwlogin(username,password)
         res = jwlogin.account_login()
         if res == 'Account login successfully':
-            get = get_course.course(username)
+            get = get_course.course(username,password)
             get.wx_save_courses(password)
         return res
     def wx_show(self,username,password):
         if self.ensure(username,password):
-            sc = select_course.select_course(username = username,MAX = self.MAX,TIMEOUT = elf.TIMEOUT)
-            sc.show_selected()
+            sc = select_course.select_course(username = username,MAX = self.MAX,TIMEOUT = self.TIMEOUT)
+            courses= sc.show_selected()
+            return '已选课程 '+','.join(courses)
     def ensure(self,username,password):
         with open('data/values/'+username+'view.txt', 'rb') as f:
             view = pickle.load(f)
