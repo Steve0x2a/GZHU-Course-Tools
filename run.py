@@ -1,5 +1,5 @@
-from sample import jw,get_course,select_course,test
-import fire
+from sample import account,get_course,select_course
+import fire,pickle
 
 class Run(object):
     '''
@@ -13,9 +13,7 @@ class Run(object):
     def refresh(self,username,password):
         username = str(username)
         passwoed = str(password)
-        jwlogin = jw.login(username,password)
-        jwlogin.main()
-        get = get_course.course(username)
+        get = get_course.course(username,password)
         get.save_courses()
     def select(self,username,index):
         username = str(username)
@@ -28,7 +26,38 @@ class Run(object):
             sc.run()
             sc.show_selected()
             flag = int(input('选课成功请输入0退出 输入1重复选课操作 '))
-
-
+            
+class wxbot(Run):
+    def wx_select(self,username,password,index):
+        if self.ensure(username,password):
+            index1 = index[0]
+            index2 = index[1:]      
+            sc = select_course.select_course(index1,index2,username,self.MAX,self.TIMEOUT)
+            sc.run()
+            return '已选课程'+sc.show_selected()
+        else :
+            return('密码错误')
+    def wx_refresh(self,username,password):
+        if self.ensure(username,password):
+            jwlogin = jw.login(username,password)
+            res = jwlogin.account_login()
+            return res
+        else:
+            return('密码错误')
+    def wx_login(self,username,password):
+        jwlogin = jw.login(username,password)
+        res = jwlogin.account_login()
+        if res == 'Account login successfully':
+            get = get_course.course(username)
+            get.wx_save_courses(password)
+        return res
+   
+    def ensure(self,username,password):
+        with open('data/values/'+username+'view.txt', 'rb') as f:
+            view = pickle.load(f)
+            if view['password'] == password:
+                return True
+            else:
+                return False
 if __name__ == '__main__':
   fire.Fire(Run)

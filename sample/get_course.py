@@ -1,25 +1,12 @@
 from bs4 import BeautifulSoup
 import re,json,requests,pickle,math
 from sample.parse import get_stuinfo,get__VIEWSTATE2
+from sample.account import jwlogin
 from collections import OrderedDict
 
 
-class course(object):
+class course(jwlogin):
 
-
-    def __init__(self,username):
-        self.session = requests.session()
-        self.username = username
-        self.baseUrl = 'http://202.192.18.184'
-        self.session.headers['User-Agent'] = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/34.0.1847.131 Safari/537.36'
-        with open('data/cookies/'+ self.username +'.txt','rb') as f:
-            cookies = requests.utils.cookiejar_from_dict(pickle.load(f))
-        self.session.cookies = cookies
-        infourl = self.baseUrl+"/xsgrxx.aspx?xh="+self.username+"&"
-        response = self.session.post(url = self.baseUrl)
-        info = self.session.get(infourl)
-        self.stuinfo = get_stuinfo(info)
-        print("欢迎你, {}, cc您的学号为:{}".format(self.stuinfo["name"],self.stuinfo["studentnumber"]))
 
     def save_courses(self):
         '''
@@ -122,3 +109,28 @@ class course(object):
         url = self.baseUrl + "/xf_xsqxxxk.aspx?xh=" + self.stuinfo["studentnumber"] + "&xm=" + self.stuinfo['urlName'] + "&gnmkdm=N121203"
         response = self.session.post(url,data=data)
         return response
+
+    def wx_save_courses(self,password):
+
+        #构造选课链接url 其中urlName为gbk格式的姓名
+        course_url = self.baseUrl + "/xf_xsqxxxk.aspx?xh=" + self.stuinfo["studentnumber"] + \
+                                    "&xm=" + self.stuinfo['urlName'] + "&gnmkdm=N121203"
+        
+        view = {}
+        response = self.session.get(course_url)
+        #用get__VIEWSTATE2函数获得首次访问选课页面viewstate以及viewgenerator参数
+        state ,generator = get__VIEWSTATE2(response)
+        #用get_total函数获得总课程数 再用math.ceil函数获得向右取整的选课页数
+        total_page = math.ceil(float(self.get_total(response)/100))
+        courses_view ={}
+        #获得每一页课程以及view参数
+        for num in range(1,total_page+1) :
+            got_course = self.get_courses_post(state,generator,num)
+            now_view = self.get_courses_view(got_course,num)
+            courses_view = dict(courses_view,**now_view)
+        #保存gbk格式的名字以备后面使用
+        courses_view['urlname'] = self.stuinfo['urlName']
+        courses_view['password'] = password 
+        #将课程以及view参数保存下来以备使用
+        with open('data/values/'+self.username+'view.txt', 'wb') as f:
+            pickle.dump(courses_view,f)

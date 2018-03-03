@@ -25,7 +25,7 @@ Python 3 +Requests + BeautifulSoup4 + lmxl +fire
 #### 例子
 ```bash
 $python run.py refresh 17xxxxxxxx 123456 #刷新课表以及用户cookie
-$python run.py select 17xxxxxxx 12 --MAX=10 --TIMEOUT =7s #选择 '中国园林'课程 10倍post力度 最多等待7s
+$python run.py select 17xxxxxxx 12 --MAX=10 --TIMEOUT=7 #选择 '中国园林'课程 10倍post力度 最多等待7s
 ```
 
 #### 注意事项

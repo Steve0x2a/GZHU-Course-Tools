@@ -24,6 +24,7 @@ class select_course(object):
         self.timeout = TIMEOUT
         self.max = MAX
         self.index1, self.index2 = index1,index2
+        self.response = ''
         self.session = requests.session()
         self.session.headers['User-Agent'] = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) \
                                     AppleWebKit/537.36 (KHTML, like Gecko) Chrome/34.0.1847.131 Safari/537.36'
@@ -65,7 +66,7 @@ class select_course(object):
                 url = self.q.get()
                 response = self.session.post(url,data = self.data,timeout = self.timeout)
                 if response.status_code == 200:
-                    self.response = response            
+                    self.response = response                            
                 self.selected = self.get_selected_course(response)
                 self.q.task_done()
             except:
@@ -85,5 +86,10 @@ class select_course(object):
             sys.exit(1)
 
     def show_selected(self):
-        courses = get_selected_course(self.response)
-        print('已选课程:{}'.format(courses))
+        try:
+            courses = get_selected_course(self.response)
+            str_courses = ','.join(courses)
+            print('已选课程:{}'.format(courses))
+            return str_courses
+        except:
+            return ''
