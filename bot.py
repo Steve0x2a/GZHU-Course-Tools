@@ -2,7 +2,7 @@ from run import wxbot
 from wxpy import *
 
 
-bot = Bot()
+bot = Bot(console_qr = True)
 run = wxbot()
 my_friend = ensure_one(bot.search('0x2a'))
 
