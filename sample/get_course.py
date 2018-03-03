@@ -15,11 +15,7 @@ class course(object):
         with open('data/cookies/'+ self.username +'.txt','rb') as f:
             cookies = requests.utils.cookiejar_from_dict(pickle.load(f))
         self.session.cookies = cookies
-        infourl = self.baseUrl+"/xsgrxx.aspx?xh="+self.username+"&"
-        response = self.session.post(url = self.baseUrl)
-        info = self.session.get(infourl)
-        self.stuinfo = get_stuinfo(info)
-        print("欢迎你, {}, cc您的学号为:{}".format(self.stuinfo["name"],self.stuinfo["studentnumber"]))
+        print("Cookie获取成功。")
 
     def save_courses(self):
         '''

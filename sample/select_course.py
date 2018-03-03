@@ -85,5 +85,8 @@ class select_course(object):
             sys.exit(1)
 
     def show_selected(self):
-        courses = get_selected_course(self.response)
-        print('已选课程:{}'.format(courses))
+        try:
+            courses = get_selected_course(self.response)
+            print('已选课程:{}'.format(courses))
+        except AttributeError:
+            print("获取失败 请重试。")

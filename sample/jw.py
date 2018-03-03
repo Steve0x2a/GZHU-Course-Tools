@@ -35,7 +35,7 @@ class login(object):
         response = self.session.post(url = self.loginurl)
         info = self.session.get(self.infourl)
         self.stuinfo = get_stuinfo(info)
-        print("欢迎你, {}, cc您的学号为:{}".format(self.stuinfo["name"],self.stuinfo["studentnumber"]))
+        print("欢迎你, {}, Cookie登录成功。您的学号为:{}".format(self.stuinfo["name"],self.stuinfo["studentnumber"]))
         
     def account_login(self):
         '''
