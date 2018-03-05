@@ -35,8 +35,9 @@ class select_course(object):
             view = pickle.load(f)
         self.view = view
         self.urls = [
-        'http://202.192.18.183',
+        'http://202.192.18.189',
         'http://202.192.18.184',
+        'http://202.192.18.183',
         'http://202.192.18.182'
         ]*self.max
 

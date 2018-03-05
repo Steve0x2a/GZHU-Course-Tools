@@ -11,10 +11,15 @@ class Run(object):
         self.TIMEOUT = TIMEOUT
         self.MAX = MAX
     def refresh(self,username,password):
-        username = str(username)
-        passwoed = str(password)
-        get = get_course.course(username,password)
-        get.save_courses()
+        while 1:
+            try:
+                username = str(username)
+                passwoed = str(password)
+                get = get_course.course(username,password)
+                get.save_courses()
+                print('成功')
+            except:
+                pass
     def select(self,username,index):
         username = str(username)
         index = str(index)

@@ -8,9 +8,9 @@ class jwlogin(object):
         self.username = username
         self.password = password
         self.session = requests.session()
-        self.baseUrl = 'http://202.192.18.183'
+        self.baseUrl = 'http://202.192.18.184'
         self.session.headers['User-Agent'] = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/34.0.1847.131 Safari/537.36'
-        self.loginurl = 'https://cas.gzhu.edu.cn/cas_server/login?service=http%3a%2f%2f202.192.18.183%2fLogin_gzdx.aspx'
+        self.loginurl = 'https://cas.gzhu.edu.cn/cas_server/login?service=http%3a%2f%2f202.192.18.184%2fLogin_gzdx.aspx'
         self.timeout = timeout
         self.infourl = self.baseUrl+"/xsgrxx.aspx?xh="+self.username+"&"  
 
