@@ -13,11 +13,8 @@ class course(jwlogin):
         用作储存选课表为data/course_list.json
         以及储存每个选课页面的viewstate用作选课
         '''
-        #构造选课链接url 其中urlName为gbk格式的姓名
         self.login()
-        course_url = self.baseUrl + "/xf_xsqxxxk.aspx?xh=" + self.stuinfo["studentnumber"] + \
-                                    "&xm=" + self.stuinfo['urlName'] + "&gnmkdm=N121203"
-        
+        course_url = self.baseUrl + "/xf_xsqxxxk.aspx?xh=" + self.username
         view = {}
         response = self.session.get(course_url)
         #用get__VIEWSTATE2函数获得首次访问选课页面viewstate以及viewgenerator参数
@@ -92,12 +89,12 @@ class course(jwlogin):
     def get_courses_post(self,state,generator,index1):
         '''发出获取某页课程表请求'''
         data = {    
-            '__EVENTTARGET': '',
+            '__EVENTTARGET': 'dpkcmcGrid:txtPageSize',
             '__EVENTARGUMENT': '',
             '__VIEWSTATE':state,
             "__VIEWSTATEGENERATOR" : generator,
             'ddl_kcxz': '',
-            'ddl_ywyl': '',
+            'ddl_ywyl': '%D3%D0',
             'ddl_kcgs': '',
             'ddl_xqbs': '1',
             'ddl_sksj': '',
@@ -107,16 +104,14 @@ class course(jwlogin):
             'dpDataGrid2:txtChoosePage':'1',  
             'dpDataGrid2:txtPageSize':'100'
         }
-        url = self.baseUrl + "/xf_xsqxxxk.aspx?xh=" + self.stuinfo["studentnumber"] + "&xm=" + self.stuinfo['urlName'] + "&gnmkdm=N121203"
+        url = self.baseUrl + "/xf_xsqxxxk.aspx?xh=" + self.username
         response = self.session.post(url,data=data)
         return response
 
     def wx_save_courses(self,password):
         self.login()
         #构造选课链接url 其中urlName为gbk格式的姓名
-        course_url = self.baseUrl + "/xf_xsqxxxk.aspx?xh=" + self.stuinfo["studentnumber"] + \
-                                    "&xm=" + self.stuinfo['urlName'] + "&gnmkdm=N121203"
-        
+        course_url = self.baseUrl + "/xf_xsqxxxk.aspx?xh=" + self.username
         view = {}
         response = self.session.get(course_url)
         #用get__VIEWSTATE2函数获得首次访问选课页面viewstate以及viewgenerator参数
@@ -129,8 +124,6 @@ class course(jwlogin):
             got_course = self.get_courses_post(state,generator,num)
             now_view = self.get_courses_view(got_course,num)
             courses_view = dict(courses_view,**now_view)
-        #保存gbk格式的名字以备后面使用
-        courses_view['urlname'] = self.stuinfo['urlName']
         courses_view['password'] = password 
         #将课程以及view参数保存下来以备使用
         with open('data/values/'+self.username+'view.txt', 'wb') as f:

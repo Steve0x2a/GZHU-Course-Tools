@@ -48,7 +48,7 @@ class select_course(object):
             '__VIEWSTATE':self.view['state'+self.index1],
             "__VIEWSTATEGENERATOR" : self.view['generator'+self.index1],
             'ddl_kcxz': '',
-            'ddl_ywyl': '',
+            'ddl_ywyl': urllib.parse.quote_plus('有'.encode('gb2312')),
             'ddl_kcgs': '',
             'ddl_xqbs': '1',
             'ddl_sksj': '',
